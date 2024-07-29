@@ -5,17 +5,23 @@ pipeline {
 
 
     stage('Code Quality'){
-           steps {
-             sh 'sonar-scanner -Dsonar.host.url=http://172.31.44.195:9000 -Dsonar.login=admin -Dsonar.password=admin123 -Dsonar.projectKey=frontend -Dsonar.qualitygate.wait=true'
+      when {
+        expression { env.TAG_NAME ==~ ".*" }
+                }
+    steps {
+       sh 'sonar-scanner -Dsonar.host.url=http://172.31.44.195:9000 -Dsonar.login=admin -Dsonar.password=admin123 -Dsonar.projectKey=frontend -Dsonar.qualitygate.wait=true'
           }
         }
 
         stage('Release'){
-                   steps {
-                    sh 'env'
-                     echo 'CI'
-                  }
-           }
+          when {
+           expression { env.TAG_NAME ==~ ".*" }
+          }
+          steps {
+             sh 'env'
+             echo 'CI'
+          }
+        }
    }
 }
 //
